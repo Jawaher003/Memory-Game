@@ -109,10 +109,44 @@ document.addEventListener('DOMContentLoaded',() => {
 
     function endGame() {
         clearInterval(timerInterval);
-        setTimeout(() => {
-            alert(`Congratulations! You won in ${moves} moves and ${timer} seconds!`);
-        }, 500);
+        
+        const overlay = document.getElementById('win-overlay');
+        const stats = document.getElementById('final-stats');
+        stats.textContent = `You finished in ${moves} moves and ${timer} seconds!`;
+        overlay.style.display = 'flex';
+
+        const fireworkInterval = setInterval(createFirework, 300);
+        
+        setTimeout(() => clearInterval(fireworkInterval), 6000);
     }
+
+    function createFirework() {
+        const overlay = document.getElementById('win-overlay');
+        const particleCount = 20;
+        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+        
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'firework';
+            
+            const angle = (i / particleCount) * Math.PI * 2;
+            const velocity = 50 + Math.random() * 50;
+            const xDestination = Math.cos(angle) * velocity;
+            const yDestination = Math.sin(angle) * velocity;
+
+            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.setProperty('--x', `${xDestination}px`);
+            particle.style.setProperty('--y', `${yDestination}px`);
+
+            overlay.appendChild(particle);
+            setTimeout(() => particle.remove(), 1000);
+        }
+    } 
     
     // Reset button event listener
     resetBtn.addEventListener('click', initGame);
